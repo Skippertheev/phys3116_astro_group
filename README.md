@@ -13,10 +13,16 @@ Setup Github
 Learning python basic commands
 Vote for Assignment option 2. 
 
+#### Meeting Attendees
+Alex Ward
+
+Lesley Kalinina
+
+Evan Zhang
 
 #### Decisions
 
-We have decided to proceed with Option 1/2 for the assignment 
+We have decided to proceed with Option 2 for the assignment 
 
 #### Open Actions 
 
