@@ -1,6 +1,6 @@
 # Meeting Minutes Astro Group
 
-## Meeting Week 1
+## Meeting Week 2
 
 #### Context
 
@@ -33,7 +33,7 @@ Make a commit each
 
 
 
-## Meeting Week 1
+## Meeting Week 3
 
 #### Context
 
