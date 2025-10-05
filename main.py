@@ -61,6 +61,44 @@ print(merged_galaxy.info())
 print("\nNumeric summary:")
 print(merged_galaxy.describe())
 
+
+# The Faber-Jackson (FJ) curve shows the relationship between the magnitudes of galaxies and their velocity dispersions.
+
+# Want to make sure that merged data will properly give results. Test with magnitude data
+
+df = pd.DataFrame(merged_galaxy)
+arr_mg = np.array(merged_galaxy)
+arr1 = arr_mg[:,8]
+
+size = np.size(arr1)
+
+print(size)
+
+print(arr1)
+
+# To get a proper looking FJ curve, one of the key factors is ellipticity, the more elliptical,
+# the better. As such the morphological data cannot yeild anything that indicates a galaxy is irregular,
+# spiral, or bar spiral.
+
+# The visual morphology data will tell which galaxies are elliptical. Any galaxy whose type is 0, will be elliptical
+# and it is these galaxies that will best fit the FJ curve.
+
+type0 = df[df['type'] == 0]
+
+print(type0)
+
+# Now that all of the 2100-odd rows of data has been reduced to 154 eliptical galaxies, we need to consider which
+# galaxies are most elliptical. After some discussion it was decided that galaxies with an ellipticity between 2
+# and 8 would not be too round or too flat. Thus, we will sort through these reduced galaxies again.
+
+df2 = df.set_index('catid')
+df2
+
+reduced_1 = df2.filter(items = ['catid', 'type', 'ellip_kin'])
+
+print(reduced_1)
+
+
 # drop missing rows
 df = merged_galaxy.copy()
 df = df[df["type"] == 0].copy()
