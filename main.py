@@ -7,6 +7,9 @@ import os
 import pandas as pd
 import numpy as np
 
+# import plots
+import matplotlib.pyplot as plt
+
 # Location of main.py, ensures that the code can always find files relative to the script's location
 base_path = os.path.dirname(__file__)
 
@@ -57,3 +60,15 @@ print(merged_galaxy.info())
 # Basic statistics of numeric columns
 print("\nNumeric summary:")
 print(merged_galaxy.describe())
+
+# drop missing rows
+df = merged_galaxy.copy()
+df = df[df["type"] == 0].copy()
+col_needed = ["sigma_re", "m_r_kin", "z_spec_kin"]
+df = df.dropna(subset = col_needed)
+
+# todo - filter through each column
+X = 100
+Y = 100
+Z = 100
+df = df[(df["sigma_re"] > X) & (df["m_r_kin"] < Y) & (df["z_spec_kin"] > Z)]
