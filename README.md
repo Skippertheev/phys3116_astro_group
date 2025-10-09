@@ -38,7 +38,7 @@ Make a commit each
 #### Context
 
 02/10/2025
-Thursday Tutorial Week 2
+Thursday Tutorial Week 3
 <br>
 Attendees: all present
 
@@ -63,6 +63,42 @@ Decided to use discord for Communications
 Alex to share paper on Faber Jackson relationship
 <br>
 Continue to extract, analyse and synthesize data 
+
+
+
+## Meeting Week 4
+
+#### Context
+
+09/10/2025
+Thursday Tutorial Week 4
+<br>
+Attendees: all present
+
+#### Agenda
+
+Discuss how we will plan to do the presentation + timeline
+<br>
+timeline: 2 minutes each minimum, 10 minutes in total
+<br>
+platform: on zoom
+<br>
+explaination of sorting mechanism
+
+#### Decisions
+<br>
+
+platform for final recoridng on zoom
+
+#### Open Actions 
+<br>
+Figure out which variables to sort.
+<br>
+fix panda error (Evan)
+<br> 
+mask the data + futher data synthesis
+<br>
+start making plots (dispersion vs magnitude + others)
 
 
 
