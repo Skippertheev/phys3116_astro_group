@@ -110,3 +110,25 @@ X = 100
 Y = 100
 Z = 100
 df = df[(df["sigma_re"] > X) & (df["m_r_kin"] < Y) & (df["z_spec_kin"] > Z)]
+
+# Now, let us create a plot of the disperision vs. magnitude to see if a FJ curve will appear for all of the galaxies
+ds_red = print(type0)
+
+df = pd.DataFrame(merged_galaxy)
+
+df.plot(x='m_r_kin', y='vsigma_max', kind='scatter')
+plt.show()
+
+# Running this shows no linear trend, and therefore, our FJ curve must be created with our refined data
+
+print(type0)
+
+df = pd.DataFrame(type0)
+
+df.plot(x='m_r_kin', y='vsigma_max', kind='scatter')
+plt.show()
+
+# Curiously, running this still gives just as random a scattering, just with less points. This indicates, that the 
+# data is still unrefined or the the m_r_kin is the incorrect magnitude to use or vsigma_max is the incorrect
+# dispersion to be used. This will be a point of discussion into next weeks meeting to understand why that data is
+# wrong.
