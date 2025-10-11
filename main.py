@@ -132,3 +132,12 @@ plt.show()
 # data is still unrefined or the the m_r_kin is the incorrect magnitude to use or vsigma_max is the incorrect
 # dispersion to be used. This will be a point of discussion into next weeks meeting to understand why that data is
 # wrong.
+
+# Keep only elliptical galaxies
+df = merged_galaxy[merged_galaxy['type'] == 0].copy()
+
+# Filter for ellipticity between 0.2 and 0.8 (best elliptical galaxies)
+df = df[(df['ellip_kin'] > 0.2) & (df['ellip_kin'] < 0.8)]
+
+# Drop rows with missing values in key columns (cleans data to not run into problems when plotting and analysing, like breaking mathematical operations and skewing results)
+df = df.dropna(subset=['sigma_re', 'm_r_kin', 'z_spec_kin'])
