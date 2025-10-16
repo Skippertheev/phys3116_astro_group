@@ -102,4 +102,27 @@ start making plots (dispersion vs magnitude + others)
 
 
 
+16/10/2025
+Thursday Tutorial Week 5
+<br>
+Attendees: all present
+
+#### Agenda
+
+<br>
+delegate and update members on work
+<br>
+check variables being used are correct
+
+#### Decisions
+<br>
+
+#### Open Actions 
+<br>
+ensure plot using unfiltered data works
+<br>
+ensure plot using further masked data works
+<br> 
+discuss the video
+
 
