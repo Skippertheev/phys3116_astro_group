@@ -139,5 +139,40 @@ df = merged_galaxy[merged_galaxy['type'] == 0].copy()
 # Filter for ellipticity between 0.2 and 0.8 (best elliptical galaxies)
 df = df[(df['ellip_kin'] > 0.2) & (df['ellip_kin'] < 0.8)]
 
-# Drop rows with missing values in key columns (cleans data to not run into problems when plotting and analysing, like breaking mathematical operations and skewing results)
-df = df.dropna(subset=['sigma_re', 'm_r_kin', 'z_spec_kin'])
+# Drop rows with missing values in key columns (cleans data to not run into problems when plotting and analysing,
+# like breaking mathematical operations and skewing results) --> replaced third variable because it is not relevant
+df = df.dropna(subset=['sigma_re', 'm_r_kin', 'mstar_kin'])
+
+# Base Faber–Jackson Relation plot using both L∝σ^4 and M∝σ^4 (same as logL=m*logσ+b). The given formula assumes a linear relationship, 
+# and since M is inversly proportional to luminosity, the graph with luminosity values is flipped for a clear representation
+
+# 'sigma_re' is how much the speeds of stars inside a galaxy differ from each other
+# 'm_r_kin' is the apparent luminosity of a galaxy in the red filter
+# 'mstar_kin' is stellar magnitude calculated from velocity dispersion and radius
+# I think the variables are already in log form?
+
+
+# Scatter plot: apparent luminosity vs velocity dispersion (the higher the velocity dispersion the lower the luminosity)
+# Allowing vs code to show me multiple windows with graphs at the same time
+plt.figure()
+df.plot(x='m_r_kin', y='sigma_re', kind='scatter')
+# Inverted for positive intercept (gcs stands for 'get current axes')
+plt.gca().invert_xaxis()
+
+# Labels
+plt.title('Faber Jackson Relation (SAMI Elliptical Galaxies)')
+plt.xlabel('r-band magnitude m_r_kin')
+plt.ylabel('Velocity dispersion σ_re (km/s)')
+
+
+# Scatter plot: magnitude vs velocity dispersion (the higher the velocity dispersion the higher the magnitude)
+plt.figure()
+plt.scatter(df['sigma_re'], df['m_r_kin'])
+df.plot(x='mstar_kin', y='sigma_re', kind='scatter') 
+
+# Labels
+plt.title('Faber Jackson Relation (SAMI Elliptical Galaxies)')
+plt.xlabel('Stellar magnitude mstar_kin')
+plt.ylabel('Velocity dispersion σ_re (km/s)')
+
+plt.show())
