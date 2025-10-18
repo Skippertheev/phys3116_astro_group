@@ -190,6 +190,40 @@ df = df[(df['ellip_kin'] > 0.2) & (df['ellip_kin'] < 0.8)]
 # like breaking mathematical operations and skewing results) --> replaced third variable because it is not relevant
 df = df.dropna(subset=['sigma_re', 'm_r_kin', 'mstar_kin'])
 
+# Upon some reflection, one of the reasons that the practice FJ curve may not have worked is because the dispersion is
+# meant to be to the power of four. A further reason for the failure is that the relationship is between dispersion^4
+# and luminosity.
+
+
+# The conversion between Magnitude and Luminosity is given as: L=(L_o)*10**(0.4((M_o)-M))
+# For M_o = abs. magnitude of the sun (= 4.85), L_o = luminosity of the sun (3.83*10**26), M = abs. magnitude of each
+# selected galaxy
+
+def lum(x):
+   return (3.83*10**26)*10**(1.932-0.4*x)
+
+df['m_r_kin'] = df['m_r_kin'].apply(lum)
+
+def quart(x):
+   return x**4
+
+df['sigma_re'] = df['sigma_re'].apply(quart)
+
+df_lumin = df['m_r_kin']
+df_quart = df['sigma_re']
+
+df3 = pd.DataFrame(df_lumin)
+df4 = pd.DataFrame(df_quart)
+
+print(df3)
+
+print(df4)
+
+# This should now have two data frames for luminosity and for the dispersion^4.
+
+# NOTE: After some discussion, we concluded that it the conversion may not be necesssary (as is explained below), 
+
+
 # Base Faber–Jackson Relation plot using both L∝σ^4 and M∝σ^4 (same as logL=m*logσ+b). The given formula assumes a linear relationship, 
 # and since M is inversly proportional to luminosity, the graph with luminosity values is flipped for a clear representation
 
