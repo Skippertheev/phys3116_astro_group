@@ -101,7 +101,7 @@ print(reduced_1)
 # preparation and filtering of the data
 df = merged_galaxy.copy()
 df = df[df["type"] == 0].copy()
- 
+
 # only required columns are needed
 col_needed = ["sigma_re", "m_r_kin", "z_spec_kin", "ellip_kin"]
 df_3 = df.dropna(subset=col_needed)
@@ -109,24 +109,24 @@ df_3 = df.dropna(subset=col_needed)
 # we drop eveyrthing except for out required column
 df_3 = df_3.dropna(subset=col_needed)
 
-# physical mask -- a compilation of all masked parameters. 
-df_3 = df_3[    
-    (df_3["sigma_re"] > 30) & (df_3["sigma_re"] < 400) &    # velocity dispersion  - SDSS III velocity dispersion measurements
-    (df_3["z_spec_kin"] > 0.004) & (df_3["z_spec_kin"] < 0.113) &    # redshift levels by (Scott et al. 2018) SAMI Galaxy Survey: Data Release Two
-    (df_3["ellip_kin"] > 0.2) & (df_3["ellip_kin"] < 0.8)   # the ellipticity  - we add one dp each way following the 0.3 - 0.7 param used by Rawlings et al. (2020), Rules of behaviour for spin–ellipticity radial tracks in galaxies
+# physical mask -- a compilation of all masked parameters.
+df_3 = df_3[   
+   (df_3["sigma_re"] > 30) & (df_3["sigma_re"] < 400) &    # velocity dispersion  - SDSS III velocity dispersion measurements
+   (df_3["z_spec_kin"] > 0.004) & (df_3["z_spec_kin"] < 0.113) &    # redshift levels by (Scott et al. 2018) SAMI Galaxy Survey: Data Release Two
+   (df_3["ellip_kin"] > 0.2) & (df_3["ellip_kin"] < 0.8)   # the ellipticity  - we add one dp each way following the 0.3 - 0.7 param used by Rawlings et al. (2020), Rules of behaviour for spin–ellipticity radial tracks in galaxies
 ].copy()
 
 # these masks values are given by the The SAMI Galaxy Survey: Data Release Two (DR2)
 
-# make a copy to only check for positive values to apply Luminosity rule. 
+# make a copy to only check for positive values to apply Luminosity rule.
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
 # L = 10 ^ (-0.4 * mass)
 L = 10 ** (-0.4 * df_3["m_r_kin"])
 
 # plotting the axis data correctly
-x = np.log10(df_3["sigma_re"])
-y = np.log10(L)
+x = np.log10(L)
+y = np.log10(df_3["sigma_re"])
 
 # removal of further NaNs and infinity numbers which came through
 mask = np.isfinite(x) & np.isfinite(y)
@@ -141,18 +141,16 @@ plt.scatter(x, y, s=32, color="royalblue", marker="*")
 # the equation we have here is log (L) = 4 * log (sigma_re) + C, where C is some constant intercept which are unknown
 # we first create a list of 100 evenly spaced points along the range of df_3["sigma_re"] / the x intercept
 # we then find C - by taking the average value of C = log(L) - 4 * log (sigma_re) over all galaxies
-x = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
-y = 4*x + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
+y = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
+x = 4*y + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
 plt.plot(x, y, color="crimson", label="Expected L ∝ σ⁴")
 
 # labels/titles
-plt.xlabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
-plt.ylabel(r'$Luminosity\, (L_{sun})$')
+plt.xlabel(r'$Luminosity\, (L_{sun})$')
+plt.ylabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
 plt.title('Faber–Jackson plot of SAMI early-type galaxies')
 plt.legend()
 
-# magnitudes: brighter = smaller number so we invert to make brighter on the right
-plt.gca().invert_xaxis()
 plt.show()
 
 
