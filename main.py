@@ -125,34 +125,41 @@ df_3 = df_3[df_3["sigma_re"] > 0].copy()
 L = 10 ** (-0.4 * df_3["m_r_kin"])
 
 # plotting the axis data correctly
-x = np.log10(L)
-y = np.log10(df_3["sigma_re"])
+x_pts = np.log10(L)
+y_pts = np.log10(df_3["sigma_re"])
 
 # removal of further NaNs and infinity numbers which came through
-mask = np.isfinite(x) & np.isfinite(y)
-x = x[mask]
-y = y[mask]
+mask = np.isfinite(x_pts) & np.isfinite(y_pts)
+x_pts = x_pts[mask]
+y_pts = y_pts[mask]
 
 # scatter plot of the final function
 plt.figure(figsize=(8,6))
-plt.scatter(x, y, s=32, color="royalblue", marker="*")
+plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
 
 # line of best fit L ∝ σ⁴
 # the equation we have here is log (L) = 4 * log (sigma_re) + C, where C is some constant intercept which are unknown
 # we first create a list of 100 evenly spaced points along the range of df_3["sigma_re"] / the x intercept
 # we then find C - by taking the average value of C = log(L) - 4 * log (sigma_re) over all galaxies
-y = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
-x = 4*y + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
-plt.plot(x, y, color="crimson", label="Expected L ∝ σ⁴")
+y_plot = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
+x_plot= 4*y_plot + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
+plt.plot(x_plot, y_plot, color="crimson", label="Expected L ∝ σ⁴")
 
 # labels/titles
-plt.xlabel(r'$Luminosity\, (L_{sun})$')
+plt.xlabel(r'$\log_{10},Luminosity\, (L_{sun})$')
 plt.ylabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
 plt.title('Faber–Jackson plot of SAMI early-type galaxies')
 plt.legend()
 
-plt.show()
+## additional kinematics/sigma_re uncertainties (bare minimum using provided SAMI errors)
+y_err = df_3["sigma_re_err"].astype(float).values 
+# transpose error into log space
+log_y_err = (y_err / df_3["sigma_re"].astype(float).values) / np.log(10)
 
+plt.errorbar(x_pts, y_pts, yerr=log_y_err, ecolor='crimson', fmt='none', capsize=2, elinewidth=0.4)
+
+## display graph
+plt.show()
 
 ## NEW PART
 
