@@ -121,10 +121,20 @@ df_3 = df_3[
 # make a copy to only check for positive values to apply Luminosity rule.
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
-# L = 10 ^ (-0.4 * mass)
+c = 299792.45        # km/s
+H0 = 70.0            # km/s/Mpc
+z = df_3["z_spec_kin"].astype(float).values
+d = (c/H0) * z
+DM = 5 * np.log10(d * 1e6) - 5   # finds the distance modulus
+
+m_r = df_3["m_r_kin"].astype(float).values
+M_r = m_r - DM           
+
+# L = 10 ^ (-0.4 * magnitude - Sun magnitude)
 L_0 = 3.84 * 10 ** 26
 M_0 = 4.83
-L = L_0 * 10 ** (-0.4 (df_3["m_r_kin"].astype(float) - M_0))
+L = L_0 * 10 ** (-0.4*(M_r - M_0))
+
 
 # plotting the axis data correctly
 y_pts = np.log10(L)
@@ -143,15 +153,15 @@ plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
 # the equation we have here is log (L) = 4 * log (sigma_re) + C, where C is some constant intercept which are unknown
 # we first create a list of 100 evenly spaced points along the range of df_3["sigma_re"] / the x intercept
 # we then find C - by taking the average value of C = log(L) - 4 * log (sigma_re) over all galaxies
-x_grid = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
+x_grid = np.linspace(x_pts.min(), x_pts.max(), 100)
 Constant = np.mean(y_pts - 4 * x_pts)
-plot= 4*x_grid + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
+plot= 4 * x_grid + Constant
 plt.plot(x_grid, plot, color="crimson", label="Expected L ∝ σ^4 " +  str("slope = 4"))
 
 ## polyfit to find out actual slope
 x_plane = np.linspace(x_pts.min(), x_pts.max(), 100)
 b_bit, a_bit = np.polyfit(x_pts, y_pts, 1)   # y = a + bx
-y_fit   = a_bit + b_bit * x_plane
+y_fit = a_bit + b_bit * x_plane
 plt.plot(x_plane, y_fit, color="purple", label="line of best fit; slope = " + str(b_bit) + ")")
 
 # displays our slope
@@ -164,7 +174,7 @@ plt.title('Faber–Jackson plot of SAMI early-type galaxies')
 plt.legend()
 
 ## additional kinematics/sigma_re uncertainties (bare minimum using provided SAMI errors)
-sigma_err = df_3["sigma_re_err"].astype(float).values
+sigma_err = df_3["sigma_re_err"].astype(float).values[mask]
 
 # transpose error into log space and plot
 xerr = (sigma_err / df_3["sigma_re"].astype(float).values[mask]) / np.log(10)  
