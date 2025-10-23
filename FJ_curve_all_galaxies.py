@@ -44,31 +44,46 @@ merged_galaxy = (
         .merge(morph, on = 'catid', how = 'left', validate = 'many_to_one', suffixes=('_clust','_morph'))
 )
 
-data = merged_galaxy[['m_r_kin', 'sigma_re']]
+data = merged_galaxy[['m_r_kin', 'sigma_re', 'z_spec_kin']]
 
 print(data)
 
 df_3 = data[data["sigma_re"] > 0].copy()
 
-# L = 10 ^ (-0.4 * mass)
-L = 10 ** (-0.4 * df_3["m_r_kin"])
+c = 299792.45                    # km/s
+H0 = 70.0                        # km/s/Mpc
+z = df_3["z_spec_kin"].astype(float).values
+d = (c/H0) * z                   # finds distance
+DM = 5 * np.log10(d * 1e6) - 5   # finds the distance modulus
+
+m_r = df_3["m_r_kin"].astype(float).values   # apparent magnitude
+M_r = m_r - DM                               # absolute magnitude
+
+# L = 10 ^ (-0.4 * magnitude - Sun magnitude)
+L_0 = 3.84 * 10 ** 26
+
+M_0 = 4.83
+L = L_0 * 10 ** (-0.4*(M_r - M_0))           # L0 * 10 ^ (-0.4 * (absolute magnitude - Sun))
+
 
 # plotting the axis data correctly
-x = np.log10(L)
-y = np.log10(df_3["sigma_re"])
+y_pts = np.log10(L)
+x_pts = np.log10(df_3["sigma_re"])
 
 # removal of further NaNs and infinity numbers which came through
-mask = np.isfinite(x) & np.isfinite(y)
-x = x[mask]
-y = y[mask]
+mask = np.isfinite(x_pts) & np.isfinite(y_pts)
+x_pts = x_pts[mask]
+y_pts = y_pts[mask]
 
 # scatter plot of the final function
 plt.figure(figsize=(8,6))
-plt.scatter(x, y, s=32, color="royalblue", marker="*")
-plt.xlabel(r'$Luminosity\, (L_{sun})$')
-plt.ylabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
-plt.title('Faber–Jackson plot of SAMI for all galaxies')
+plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
+
+# labels/titles
+plt.ylabel(r'$\log_{10},Luminosity\, (L_{sun})$')
+plt.xlabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
+plt.title('Faber–Jackson plot of SAMI early-type galaxies')
 plt.legend()
 
-
+## display graph 
 plt.show()
