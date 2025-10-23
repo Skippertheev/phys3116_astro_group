@@ -122,11 +122,11 @@ df_3 = df_3[
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
 # L = 10 ^ (-0.4 * mass)
-L = 10 ** (-0.4 * df_3["m_r_kin"])
+L = 10 ** (-0.4 * df_3["m_r_kin"].astype(float))
 
 # plotting the axis data correctly
-x_pts = np.log10(L)
-y_pts = np.log10(df_3["sigma_re"])
+y_pts = np.log10(L)
+x_pts = np.log10(df_3["sigma_re"])
 
 # removal of further NaNs and infinity numbers which came through
 mask = np.isfinite(x_pts) & np.isfinite(y_pts)
@@ -141,24 +141,34 @@ plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
 # the equation we have here is log (L) = 4 * log (sigma_re) + C, where C is some constant intercept which are unknown
 # we first create a list of 100 evenly spaced points along the range of df_3["sigma_re"] / the x intercept
 # we then find C - by taking the average value of C = log(L) - 4 * log (sigma_re) over all galaxies
-y_plot = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
-x_plot= 4*y_plot + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
-plt.plot(x_plot, y_plot, color="crimson", label="Expected L ∝ σ⁴")
+x_grid = np.linspace(np.log10(df_3["sigma_re"].min()), np.log10(df_3["sigma_re"].max()), 100)
+Constant = np.mean(y_pts - 4 * x_pts)
+plot= 4*x_grid + np.mean(np.log10(L) - 4 * np.log10(df_3["sigma_re"]))
+plt.plot(x_grid, plot, color="crimson", label="Expected L ∝ σ^4 " +  str("slope = 4"))
+
+## polyfit to find out actual slope
+x_plane = np.linspace(x_pts.min(), x_pts.max(), 100)
+b_bit, a_bit = np.polyfit(x_pts, y_pts, 1)   # y = a + bx
+y_fit   = a_bit + b_bit * x_plane
+plt.plot(x_plane, y_fit, color="purple", label="line of best fit; slope = " + str(b_bit) + ")")
+
+# displays our slope
+print("This is our actual slope", b_bit)
 
 # labels/titles
-plt.xlabel(r'$\log_{10},Luminosity\, (L_{sun})$')
-plt.ylabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
+plt.ylabel(r'$\log_{10},Luminosity\, (L_{sun})$')
+plt.xlabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
 plt.title('Faber–Jackson plot of SAMI early-type galaxies')
 plt.legend()
 
 ## additional kinematics/sigma_re uncertainties (bare minimum using provided SAMI errors)
-y_err = df_3["sigma_re_err"].astype(float).values 
-# transpose error into log space
-log_y_err = (y_err / df_3["sigma_re"].astype(float).values) / np.log(10)
+sigma_err = df_3["sigma_re_err"].astype(float).values
 
-plt.errorbar(x_pts, y_pts, yerr=log_y_err, ecolor='crimson', fmt='none', capsize=2, elinewidth=0.4)
+# transpose error into log space and plot
+xerr = (sigma_err / df_3["sigma_re"].astype(float).values[mask]) / np.log(10)  
+plt.errorbar(x_pts, y_pts, xerr=xerr, yerr=None, ecolor='gray', fmt='none', capsize=2, elinewidth=0.4)
 
-## display graph
+## display graph 
 plt.show()
 
 ## NEW PART
