@@ -121,19 +121,19 @@ df_3 = df_3[
 # make a copy to only check for positive values to apply Luminosity rule.
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
-c = 299792.45        # km/s
-H0 = 70.0            # km/s/Mpc
+c = 299792.45                    # km/s
+H0 = 70.0                        # km/s/Mpc
 z = df_3["z_spec_kin"].astype(float).values
-d = (c/H0) * z
+d = (c/H0) * z                   # finds distance
 DM = 5 * np.log10(d * 1e6) - 5   # finds the distance modulus
 
-m_r = df_3["m_r_kin"].astype(float).values
-M_r = m_r - DM           
+m_r = df_3["m_r_kin"].astype(float).values   # apparent magnitude
+M_r = m_r - DM                               # absolute magnitude
 
 # L = 10 ^ (-0.4 * magnitude - Sun magnitude)
 L_0 = 3.84 * 10 ** 26
 M_0 = 4.83
-L = L_0 * 10 ** (-0.4*(M_r - M_0))
+L = L_0 * 10 ** (-0.4*(M_r - M_0))           # L0 * 10 ^ (-0.4 * (absolute magnitude - Sun))
 
 
 # plotting the axis data correctly
