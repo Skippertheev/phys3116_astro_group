@@ -122,7 +122,9 @@ df_3 = df_3[
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
 # L = 10 ^ (-0.4 * mass)
-L = 10 ** (-0.4 * df_3["m_r_kin"].astype(float))
+L_0 = 3.84 * 10 ** 26
+M_0 = 4.83
+L = L_0 * 10 ** (-0.4 (df_3["m_r_kin"].astype(float) - M_0))
 
 # plotting the axis data correctly
 y_pts = np.log10(L)
