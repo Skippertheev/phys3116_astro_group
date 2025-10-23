@@ -122,7 +122,7 @@ df_3 = df_3[
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
 # L = 10 ^ (-0.4 * mass)
-L_0 = 3.84 * 10 ** 26
+L_0 = 3.84 * 10 ** 26 # in Watts
 M_0 = 4.83
 L = L_0 * 10 ** (-0.4 (df_3["m_r_kin"].astype(float) - M_0))
 
