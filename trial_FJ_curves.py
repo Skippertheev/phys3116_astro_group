@@ -121,7 +121,6 @@ df_3 = df_3[
 # make a copy to only check for positive values to apply Luminosity rule.
 df_3 = df_3[df_3["sigma_re"] > 0].copy()
 
-<<<<<<< HEAD
 c = 299792.45                    # km/s
 H0 = 70.0                        # km/s/Mpc
 z = df_3["z_spec_kin"].astype(float).values
@@ -133,10 +132,6 @@ M_r = m_r - DM                               # absolute magnitude
 
 # L = 10 ^ (-0.4 * magnitude - Sun magnitude)
 L_0 = 3.84 * 10 ** 26
-=======
-# L = 10 ^ (-0.4 * mass)
-L_0 = 3.84 * 10 ** 26 # in Watts
->>>>>>> 49c690f7341ee174e6032e0369f6bc716328334b
 M_0 = 4.83
 L = L_0 * 10 ** (-0.4*(M_r - M_0))           # L0 * 10 ^ (-0.4 * (absolute magnitude - Sun))
 
