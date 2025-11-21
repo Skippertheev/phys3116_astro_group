@@ -3,6 +3,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+FONT = 18
+LINE = 2
+
 base_path = os.path.dirname(__file__)
 
 data_path = os.path.join(base_path, "Data_Repo")
@@ -40,6 +44,21 @@ df_3 = df.dropna(subset=col_needed)
 
 df_3 = df_3.dropna(subset=col_needed)
 
+# === Bring in the FJR filters used in the first file ===
+fjr_sample = df_3.copy()
+fjr_sample = fjr_sample[
+   (fjr_sample["type"] == 0) &
+   (fjr_sample["sigma_re"] > 30) & (fjr_sample["sigma_re"] < 400) &
+   (fjr_sample["z_spec_kin"] > 0.004) & (fjr_sample["z_spec_kin"] < 0.113) &
+   (fjr_sample["ellip_kin"] > 0.1) & (fjr_sample["ellip_kin"] < 0.9)
+].copy()
+
+# extract x,y for plotting
+x_fjr = fjr_sample["z_spec_kin"].values
+y_fjr = fjr_sample["sigma_re"].values
+
+print ("how many?", x_fjr.size)
+
 c = 299792.45
 H0 = 70.0
 z = df_3["z_spec_kin"].astype(float).values
@@ -55,16 +74,25 @@ x_pts = x_pts[mask]
 y_pts = y_pts[mask]
 
 plt.figure(figsize=(8,6))
-plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
-plt.title("How Dispersion Changes with Respect to a Galaxies Distance from the Milky Way")
-plt.xlabel("Redshift")
-plt.ylabel("Velocity Dispersion / km/s")
+plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*", linewidth=LINE)
+plt.title("Redshift vs Velocity Dispersion", fontsize=FONT)
+plt.xlabel("Redshift", fontsize=FONT)
+plt.ylabel("Velocity Dispersion / km/s", fontsize=FONT)
+
+plt.scatter(x_fjr, y_fjr, s=60, color="crimson", marker="o", label="FJR sample", linewidth=LINE)
+
+
+plt.axvspan(0.029, 0.058,
+            alpha=0.15,
+            color="blue",
+            label=r"SAMI cluster range $0.029<z<0.058$")
+
 
 ## polyfit to find out actual slope
 x_plane = np.linspace(x_pts.min(), x_pts.max(), 100)
 b_bit, a_bit = np.polyfit(x_pts, y_pts, 1)   # y = a + bx
 y_fit = a_bit + b_bit * x_plane
-plt.plot(x_plane, y_fit, color="purple", label="line of best fit; slope = " + str(b_bit) + ")")
+plt.plot(x_plane, y_fit, color="purple", label="line of best fit" , linewidth=LINE)
 
 correlation_matrix = np.corrcoef(x_pts, y_pts)
 correlation_coefficient = correlation_matrix[0, 1]
@@ -72,7 +100,7 @@ correlation_coefficient = correlation_matrix[0, 1]
 print(f"Correlation coefficient (NumPy): {correlation_coefficient}")
 print("Gradient", b_bit)
 
-plt.legend()
+plt.legend(fontsize=FONT)
 plt.show()
 
 num_points = len(df)

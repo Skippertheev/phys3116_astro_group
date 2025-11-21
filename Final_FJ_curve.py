@@ -68,6 +68,8 @@ print(merged_galaxy.info())
 print("\nNumeric summary:")
 print(merged_galaxy.describe())
 
+FONT = 18
+LINE = 2
 
 # The Faber-Jackson (FJ) curve shows the relationship between the magnitudes of galaxies and their velocity dispersions.
 # Want to make sure that merged data will properly give results. Test with magnitude data
@@ -165,7 +167,7 @@ y_pts = y_pts[mask]
 
 # scatter plot of the final function
 plt.figure(figsize=(8,6))
-plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
+plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*", linewidth=LINE)
 
 # line of best fit L ∝ σ⁴
 # the equation we have here is log (L) = 4 * log (sigma_re) + C, where C is some constant intercept which are unknown
@@ -174,22 +176,22 @@ plt.scatter(x_pts, y_pts, s=32, color="royalblue", marker="*")
 x_grid = np.linspace(x_pts.min(), x_pts.max(), 100)
 Constant = np.mean(y_pts - 4 * x_pts)
 plot= 4 * x_grid + Constant
-plt.plot(x_grid, plot, color="crimson", label="Expected L ∝ σ^4 " +  str("slope = 4"))
+plt.plot(x_grid, plot, color="crimson", label="Expected L ∝ σ^4 " +  str("slope = 4"), linewidth=LINE)
 
 ## polyfit to find out actual slope
 x_plane = np.linspace(x_pts.min(), x_pts.max(), 100)
 b_bit, a_bit = np.polyfit(x_pts, y_pts, 1)   # y = a + bx
 y_fit = a_bit + b_bit * x_plane
-plt.plot(x_plane, y_fit, color="purple", label="line of best fit; slope = " + str(b_bit) + ")")
+plt.plot(x_plane, y_fit, color="purple", label="line of best fit; slope = " + str(b_bit) + ")", linewidth=LINE)
 
 # displays our slope
 print("This is our actual slope", b_bit)
 
 # labels/titles
-plt.ylabel(r'$\log_{10},Luminosity\, (L_{sun})$')
-plt.xlabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$')
-plt.title('Faber–Jackson plot of SAMI early-type galaxies')
-plt.legend()
+plt.ylabel(r'$\log_{10},Luminosity\, (L_{sun})$', fontsize=FONT)
+plt.xlabel(r'$\log_{10},\sigma_{{re}}\, (km/s)$', fontsize=FONT)
+plt.title('Faber–Jackson plot of SAMI early-type galaxies', fontsize=FONT)
+plt.legend(fontsize=FONT)
 
 ## additional kinematics/sigma_re uncertainties (bare minimum using provided SAMI errors)
 sigma_err = df_3["sigma_re_err"].astype(float).values[mask]
